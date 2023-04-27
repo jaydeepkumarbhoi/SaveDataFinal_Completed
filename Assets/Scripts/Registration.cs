@@ -18,7 +18,25 @@ public class Registration : BaseClass
     public void Registration_ButtonCall()
     {
         UiManager.instance.showNext(CanvasScreen.Login);
-        SaveManager.instance.registerAddData(this);           
+        SaveManager.instance.registerAddData(this);
+
+       
+        StartCoroutine(clearData());
+    }
+
+
+   
+
+
+
+IEnumerator clearData()
+{
+    yield return new WaitForSeconds(0.8f);
+   
+        userId_edt.text = "";
+        password_edt.text = "";
+        fullName_edt.text = "";
+        mobileNo_edt.text = "";
     }
 
     //public void Login_ButtonCall()

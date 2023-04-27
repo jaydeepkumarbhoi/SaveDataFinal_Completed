@@ -7,7 +7,8 @@ public enum CanvasScreen
 {
     Registration,
     Login,
-    ContactData
+    ContactData,
+    DisplayContacts
 
 }
 

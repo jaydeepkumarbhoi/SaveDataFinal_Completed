@@ -9,7 +9,10 @@ public class ContactData : BaseClass
 
     public Button submitBtn;
 
-    
+    private void Start()
+    {
+        submitBtn.onClick.AddListener(editContactData);
+    }
 
     public void editContactData()
     {
