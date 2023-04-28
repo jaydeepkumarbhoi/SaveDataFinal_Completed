@@ -5387,6 +5387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newCanvas: {fileID: 0}
   addContactBtn: {fileID: 1797713705}
+  closeBtn: {fileID: 1272375475}
 --- !u!1 &964515754
 GameObject:
   m_ObjectHideFlags: 0
@@ -6865,7 +6866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1272375474
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8379,7 +8380,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1195246018}
   m_HandleRect: {fileID: 1195246017}
   m_Direction: 2
-  m_Value: 0.67602414
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
