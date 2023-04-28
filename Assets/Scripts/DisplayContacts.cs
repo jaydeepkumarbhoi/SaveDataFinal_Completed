@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DisplayContacts : BaseClass
 {
-   public Button addContactBtn;
+   public Button addContactBtn,closeBtn;
 
     
 
@@ -16,7 +16,7 @@ public class DisplayContacts : BaseClass
     void Start()
     {
         addContactBtn.onClick.AddListener(addContactdetail);
-
+        closeBtn.onClick.AddListener(closeBtncall);
         instance = this;
 
     }
@@ -27,9 +27,12 @@ public class DisplayContacts : BaseClass
         
     }
 
+    
 
-   
-
+ public void closeBtncall()
+    {
+        UiManager.instance.showNext(CanvasScreen.Login);
+    }
 
     public void addContactdetail()
     {
