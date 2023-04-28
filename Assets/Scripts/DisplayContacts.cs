@@ -7,10 +7,18 @@ public class DisplayContacts : BaseClass
 {
    public Button addContactBtn;
 
-    public GameObject contentPrefab;
+    
+
+    public static DisplayContacts instance;
+
+   
+
     void Start()
     {
         addContactBtn.onClick.AddListener(addContactdetail);
+
+        instance = this;
+
     }
 
     // Update is called once per frame
@@ -19,13 +27,12 @@ public class DisplayContacts : BaseClass
         
     }
 
+
+   
+
+
     public void addContactdetail()
     {
         UiManager.instance.showNext(CanvasScreen.ContactData);
-
-        PlayerPrefs.GetString("userID");
-    
-
-       // SaveManager.instance.userDataCall.
     }
 }

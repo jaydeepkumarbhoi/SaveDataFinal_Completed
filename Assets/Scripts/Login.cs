@@ -12,9 +12,10 @@ public class Login : BaseClass
     public static Login instance;
     void Start()
     {
+        instance = this;
         login_btn.onClick.AddListener(loginButtonCall);
         reg_btn.onClick.AddListener(regButtonCall);
-        instance = this;
+       
 
     }
 
@@ -26,11 +27,13 @@ public class Login : BaseClass
 
     public void loginButtonCall()
     {
-
+        PlayerPrefs.SetString("userId", username_edt.text);
+        UiManager.instance.showNext(CanvasScreen.DisplayContacts);
         SaveManager.instance.validateLogin(this);
-
         StartCoroutine(clearData());
-        
+        SaveManager.instance.displayCall();
+
+
     }
 
     IEnumerator  clearData()

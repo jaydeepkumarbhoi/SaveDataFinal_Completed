@@ -8,7 +8,8 @@ public enum CanvasScreen
     Registration,
     Login,
     ContactData,
-    DisplayContacts
+    DisplayContacts,
+    UpdateUserContacts
 
 }
 

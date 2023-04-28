@@ -11,12 +11,13 @@ public class ContactData : BaseClass
 
     private void Start()
     {
-        submitBtn.onClick.AddListener(editContactData);
+        submitBtn.onClick.AddListener(addContacts);
     }
 
-    public void editContactData()
+    public void addContacts()
     {
-        UiManager.instance.showNext(CanvasScreen.Login);
+        SaveManager.instance.DisplaySingleList(userName_edt.text,mobileNo_edt.text);
+        UiManager.instance.showNext(CanvasScreen.DisplayContacts);
         SaveManager.instance.contactAddData(this);
     }
 }

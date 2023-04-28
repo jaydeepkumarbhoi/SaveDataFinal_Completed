@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using TMPro;
 
 public class SaveManager : MonoBehaviour
 {
@@ -11,21 +12,26 @@ public class SaveManager : MonoBehaviour
     
     public  PlayerData playerData;
 
-    public UserData userDataCall;
-
+    
     private static string filePath;
 
-    public GameObject displayPrefab,gameObjParent;
+    public GameObject displayPrefab, gameObjParent;
 
+    public  string userName, mobileNo;
 
-    UserData getUserIDCall; 
+    public int count;
+
+    string tempName, filePath2;
+
+    public TMP_InputField unmt, mnot, emailt, addresst;
+    public string email, address;
+
     private void Awake()
     {
         filePath = Application.dataPath + "/jsonDataSave.json";
+         filePath2 = Application.persistentDataPath + "/jsonDataSave.don";
         LoadPlayer();
         instance = this;
-
-     //   getUserIDCall= playerData.userList.Find(UserData => UserData.userId == Login.instance.username_edt.text);
     }
 
     public void registerAddData(Registration registration) {
@@ -54,7 +60,7 @@ public class SaveManager : MonoBehaviour
         conInfo.address = con.address_edt.text;
         conInfo.emailId = con.email_edt.text;
 
-        UserData getUserID = playerData.userList.Find(UserData => UserData.userId == Login.instance.username_edt.text);
+        UserData getUserID = playerData.userList.Find(UserData => UserData.userId == PlayerPrefs.GetString("userId"));
 
         Debug.Log("Hello.." + PlayerPrefs.GetString("userId"));
         Debug.Log("Hi.."+getUserID);
@@ -63,6 +69,12 @@ public class SaveManager : MonoBehaviour
         {
             getUserID.contactInfoobj.contactList.Add(conInfo);
         }
+        else {
+
+            Debug.Log("Not call");
+
+        }
+
 
         savePlayer();
     }
@@ -71,14 +83,15 @@ public class SaveManager : MonoBehaviour
     public void validateLogin(Login login)
     {
         UserData getUserID = playerData.userList.Find(UserData => UserData.userId == login.username_edt.text);
-        //UserData getUserPass = playerData.userList.Find(UserData => UserData.password == login.pass_edt.text);
+     //   UserData getUserPass = playerData.userList.Find(UserData => UserData.password == login.pass_edt.text);
        
         if (getUserID.userId == login.username_edt.text && getUserID.password == login.pass_edt.text)
         {
             UiManager.instance.showNext(CanvasScreen.DisplayContacts);
           //  playerData.userList.Count();
             PlayerPrefs.SetString("userID", getUserID.ToString());
-            displayData( getUserID.contactInfoobj.contactList.Count);
+            count = getUserID.contactInfoobj.contactList.Count;
+            Debug.Log("count="+getUserID.contactInfoobj.contactList.Count);
         }
         else
         {
@@ -87,62 +100,133 @@ public class SaveManager : MonoBehaviour
 
     }
 
-    public void displayData(int count)
+    public void DisplaySingleList(string unm,string mno)
     {
-        for(int i = 0; i <= count; i++)
+        GameObject listData = Instantiate(displayPrefab, displayPrefab.transform.position, Quaternion.identity, gameObjParent.transform);
+
+        DisplayListData data = listData.GetComponent<DisplayListData>();
+
+
+        data.userNameTxt.text = unm;
+        data.mobileNoTxt.text = mno;
+    }
+
+
+    public void destroyListData()
+    {
+        GameObject[] listOb=GameObject.FindGameObjectsWithTag("Finish");
+
+        for(int i = 0; i < listOb.Length; i++)
         {
-            Instantiate(displayPrefab,displayPrefab.transform.position,Quaternion.identity, gameObjParent.transform);
+            Destroy(listOb[i]);
         }
     }
 
+    public void displayCall()
+    {
+        UserData getUserID = playerData.userList.Find(UserData => UserData.userId == PlayerPrefs.GetString("userId"));
+
+        for (int i = 0; i < getUserID.contactInfoobj.contactList.Count; i++)
+        {
+            GameObject listData = Instantiate(displayPrefab, displayPrefab.transform.position, Quaternion.identity, gameObjParent.transform);
+         
+            DisplayListData data=  listData.GetComponent<DisplayListData>();
+
+            data.userNameTxt.text = getUserID.contactInfoobj.contactList[i].name;
+            data.mobileNoTxt.text = getUserID.contactInfoobj.contactList[i].mobileNo;
+
+            email= getUserID.contactInfoobj.contactList[i].emailId;
+            address= getUserID.contactInfoobj.contactList[i].address;
+          
+        }
+
+    }
+
+    public void  fatchData(string dataName)
+    {
+        tempName = dataName;
+    }
+
+    public void UpdateData()
+    {
+        UserData getUserID = playerData.userList.Find(UserData => UserData.userId == PlayerPrefs.GetString("userId"));
+        int count = getUserID.contactInfoobj.contactList.Count;
+        for (int i = 0; i < count; i++)
+        {
+            if (getUserID.contactInfoobj.contactList[i].name == tempName)
+            {
+                getUserID.contactInfoobj.contactList[i].name = UpdateUserContacts.instance.userName_edt.text;
+                getUserID.contactInfoobj.contactList[i].mobileNo = UpdateUserContacts.instance.mobileNo_edt.text;
+                getUserID.contactInfoobj.contactList[i].emailId = UpdateUserContacts.instance.email_edt.text;
+                getUserID.contactInfoobj.contactList[i].address = UpdateUserContacts.instance.address_edt.text;
+
+                Debug.Log(getUserID.contactInfoobj.contactList[i].name);
+                Debug.Log(getUserID.contactInfoobj.contactList[i].mobileNo);
+                Debug.Log(getUserID.contactInfoobj.contactList[i].emailId);
+                Debug.Log(getUserID.contactInfoobj.contactList[i].address);
+            }
+        }
+    }
+
+
+   
 
     public  void savePlayer()
     {
-        //    BinaryFormatter formetor = new BinaryFormatter();
-        //    string filePath = Application.persistentDataPath + "/SaveDataManagerTask.jd";
-        //    FileStream fstream = new FileStream(filePath, FileMode.Create);
-        //    formetor.Serialize(fstream, playerData);
-        //    fstream.Close();
+        BinaryFormatter formetor = new BinaryFormatter();
+       // string filePath = Application.persistentDataPath + "/SaveDataManagerTask.jd";
+        FileStream fstream = new FileStream(filePath2, FileMode.Create);
+        formetor.Serialize(fstream, playerData);
+        fstream.Close();
 
 
-        string jsonData = JsonUtility.ToJson(playerData);
-        File.WriteAllText(filePath, jsonData);
+        //string jsonData = JsonUtility.ToJson(playerData);
+        //File.WriteAllText(filePath, jsonData);
 
     }
 
+
+    public void displayContactData(string name, string mno, string add, string email)
+    {
+
+        unmt.text = name;
+        mnot.text = mno;
+        addresst.text = add;
+        emailt.text = email;
+
+    }
+
+
     public void LoadPlayer()
     {
-        string  path = Application.persistentDataPath + "/jsonDataSave.json";
+       
 
-        if (File.Exists(filePath))
-        {
-
-            string jsonData = File.ReadAllText(filePath);
-            playerData = JsonUtility.FromJson<PlayerData>(jsonData);
-        }
-        else
-        {
-            Debug.Log("No file are there");
-        }
-
-
-        //if (File.Exists(path))
+        //if (File.Exists(filePath))
         //{
-        //    BinaryFormatter formatter = new BinaryFormatter();
-        //    FileStream fileStream = new FileStream(path, FileMode.Open);
 
-        //    playerData = formatter.Deserialize(fileStream) as PlayerData;
-
-        //    fileStream.Close();
-
-
+        //    string jsonData = File.ReadAllText(filePath);
+        //    playerData = JsonUtility.FromJson<PlayerData>(jsonData);
         //}
         //else
         //{
-        //    Debug.Log("********* File Not Exists ************");
-        //    playerData.userData = new UserData();
-        //    playerData.contacts = new List<ContactInfo>();
+        //    Debug.Log("No file are there");
         //}
+
+
+        if (File.Exists(filePath2))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream fileStream = new FileStream(filePath2, FileMode.Open);
+            playerData = formatter.Deserialize(fileStream) as PlayerData;
+            fileStream.Close();
+
+
+        }
+        else
+        {
+            Debug.Log("********* File Not Exists ************");
+         
+        }
     }
 
 
